@@ -27,21 +27,21 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Users } from '../entitys/Users';
 import { AvatarUploadDto } from './dto/avatar-upload.dto';
+import { RegisterDto } from './dto/create-user.dto';
 
 @ApiTags('用户模块')
+@ApiBearerAuth()
 @Controller('user')
 @UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.userService.create(createUserDto);
-  // }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post('/register')
+  @ApiOperation({ summary: '用户注册' })
+  async register(@Body() RegisterDto: RegisterDto) {
+    const user = await this.userService.saveUser(RegisterDto);
+    delete user.password;
+    return user;
   }
 
   @Get('info')
@@ -52,7 +52,6 @@ export class UserController {
 
   @ApiOperation({ summary: '上传用户头像' })
   @ApiConsumes('multipart/form-data')
-  @ApiBearerAuth()
   @ApiBody({
     description: '头像上传',
     type: AvatarUploadDto,
@@ -67,13 +66,15 @@ export class UserController {
     return this.userService.avatarUpload(file, user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @ApiOperation({
+    summary: '编辑用户资料',
+    description: '更新用户手机号或邮箱 可以为空 为空则不执行',
+  })
+  @Patch('profile')
+  async update(
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: Users,
+  ) {
+    return this.userService.update(updateUserDto, user);
   }
 }

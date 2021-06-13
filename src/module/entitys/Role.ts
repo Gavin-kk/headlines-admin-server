@@ -34,7 +34,4 @@ export class Role {
   menu: string[] | null;
   @Column('simple-json', { name: 'parent_menu', nullable: true })
   parentMenu: string[] | null;
-
-  @OneToMany(() => Users, (users) => users.role)
-  users: Users[];
 }
