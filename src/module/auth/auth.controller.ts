@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../../common/decorator/current-user.decorator';
 import { Users } from '../entitys/Users';
+import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +16,11 @@ export class AuthController {
 
   // @Post('register')
   // async register(@Body() registerDto: RegisterDto) {}
-
+  @ApiOperation({ summary: '用户登录接口', description: '返回token' })
+  @ApiBody({
+    description: '用户名和密码',
+    type: LoginDto,
+  })
   @Post('login')
   @UseGuards(AuthGuard('local'))
   async login(@CurrentUser() user: Users) {

@@ -1,8 +1,19 @@
 import { diskStorage } from 'multer';
 import { Request } from 'express';
 import { v4 } from 'uuid';
-import { extname } from 'path';
-import { File } from '../../../nestjs-admin-server/dist/config/upload.config';
+import { extname, join } from 'path';
+
+export type File = {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer;
+};
 
 export const storage = diskStorage({
   destination(
@@ -10,7 +21,14 @@ export const storage = diskStorage({
     file: Express.Multer.File,
     callback: (error: Error | null, destination: string) => void,
   ) {
-    // 在这里设置文件上传时的名称
+    const filePath = join(__dirname, '../upload');
+    callback(null, filePath);
+  },
+  filename(
+    req: Request,
+    file: Express.Multer.File,
+    callback: (error: Error | null, filename: string) => void,
+  ) {
     const fileName = `${v4()}.${new Date().getTime()}.${file.encoding}${extname(
       file.originalname,
     )}`;
