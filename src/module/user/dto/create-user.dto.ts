@@ -16,4 +16,7 @@ export class RegisterDto extends Users {
 
   @ApiProperty({ description: 'email' })
   email: string;
+
+  @ApiProperty({ description: '头条号简介' })
+  intro: string;
 }

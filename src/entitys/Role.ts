@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Users } from "./Users";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("role", { schema: "headline_admin" })
 export class Role {
@@ -34,7 +33,4 @@ export class Role {
 
   @Column("text", { name: "parent_menu", nullable: true })
   parentMenu: string | null;
-
-  @OneToMany(() => Users, (users) => users.role)
-  users: Users[];
 }

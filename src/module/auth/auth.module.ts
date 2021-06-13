@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,10 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: () => ({
         secret: process.env.JWT_SECRET,
       }),
+    }),
+    HttpModule.register({
+      timeout: 5000,
+      baseURL: 'http://ttapi.research.itcast.cn/mp/v1_0',
     }),
   ],
   providers: [AuthService, JwtStrategy, LocalStrategy],

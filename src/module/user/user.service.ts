@@ -30,10 +30,10 @@ export class UserService {
       .execute();
   }
 
-  async update({ phone, email }: UpdateUserDto, { id }: Users) {
+  async update(updateUserDto: UpdateUserDto, { id }: Users) {
     return this.userRepository
       .createQueryBuilder()
-      .update({ phone, email })
+      .update({ ...updateUserDto })
       .where('id = :id', { id })
       .execute();
   }

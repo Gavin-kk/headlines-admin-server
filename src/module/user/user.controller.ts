@@ -24,7 +24,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Users } from '../entitys/Users';
 import { AvatarUploadDto } from './dto/avatar-upload.dto';
 import { RegisterDto } from './dto/create-user.dto';

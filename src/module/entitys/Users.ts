@@ -66,4 +66,7 @@ export class Users {
 
   @Column('varchar', { name: 'avatar', nullable: true, length: 500 })
   avatar: string | null;
+
+  @Column('text', { name: 'intro', nullable: true })
+  intro: string | null;
 }

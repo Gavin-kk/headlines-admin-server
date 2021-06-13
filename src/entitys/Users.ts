@@ -1,15 +1,6 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Role } from "./Role";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Index("IDX_fe0bb3f6520ee0469504521e71", ["username"], { unique: true })
-@Index("role_id", ["roleId"], {})
 @Index("username", ["username"], { unique: true })
 @Entity("users", { schema: "headline_admin" })
 export class Users {
@@ -39,19 +30,12 @@ export class Users {
   })
   updateAt: Date | null;
 
-  @Column("int", { name: "role_id", nullable: true })
-  roleId: number | null;
-
   @Column("varchar", { name: "phone", nullable: true, length: 50 })
   phone: string | null;
 
   @Column("varchar", { name: "avatar", nullable: true, length: 500 })
   avatar: string | null;
 
-  @ManyToOne(() => Role, (role) => role.users, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  })
-  @JoinColumn([{ name: "role_id", referencedColumnName: "id" }])
-  role: Role;
+  @Column("text", { name: "intro", nullable: true })
+  intro: string | null;
 }
