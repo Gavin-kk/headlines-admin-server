@@ -36,6 +36,7 @@ export class ChannelsService {
     return this.channelsRepository
       .createQueryBuilder()
       .delete()
-      .where('id = :id', { id });
+      .where('id = :id', { id })
+      .execute();
   }
 }

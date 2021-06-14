@@ -64,8 +64,8 @@ export class Users {
   })
   updateAt: Date | null;
 
-  @Column('varchar', { name: 'avatar', nullable: true, length: 500 })
-  avatar: string | null;
+  @Column('simple-json', { name: 'avatar', nullable: true })
+  avatar: string[] | null;
 
   @Column('text', { name: 'intro', nullable: true })
   intro: string | null;

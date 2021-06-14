@@ -13,12 +13,22 @@ export class ArticleService {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  async create({ title, content, cover }: CreateArticleDto) {
+  async create({ title, content, cover = [] }: CreateArticleDto) {
     return this.articleRepository.save({
       title,
       content,
-      cover: JSON.stringify(cover),
+      cover: cover,
     });
+  }
+
+  public async uploadCover(files: Express.Multer.File[]): Promise<string[]> {
+    const covers: string[] = [];
+    files.forEach((item) => {
+      covers.push(
+        `http://${process.env.APP_HOST}:${process.env.APP_PORT}/static/${item.filename}`,
+      );
+    });
+    return covers;
   }
 
   async findAll({
@@ -67,6 +77,10 @@ export class ArticleService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} article`;
+    return this.articleRepository
+      .createQueryBuilder()
+      .delete()
+      .where('id = :id', { id })
+      .execute();
   }
 }

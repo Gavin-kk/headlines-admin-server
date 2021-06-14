@@ -57,5 +57,5 @@ export class Article {
   updateAt: Date | null;
 
   @Column('simple-json', { name: 'cover', nullable: true })
-  cover: string | null;
+  cover: string[] | null;
 }

@@ -21,13 +21,18 @@ export class UserService {
   async avatarUpload(file: Express.Multer.File, user: Users) {
     const { filename } = file;
     const { id } = user;
-    return await this.userRepository
+    const path = [
+      `http://${process.env.APP_HOST}:${process.env.APP_PORT}/static/${filename}`,
+    ];
+
+    await this.userRepository
       .createQueryBuilder()
       .update({
-        avatar: `http://${process.env.APP_HOST}:${process.env.APP_PORT}/static/${filename}`,
+        avatar: path,
       })
       .where('id = :id', { id })
       .execute();
+    return path;
   }
 
   async update(updateUserDto: UpdateUserDto, { id }: Users) {

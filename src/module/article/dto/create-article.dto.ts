@@ -11,8 +11,5 @@ export class CreateArticleDto {
   content: string;
 
   @ApiProperty({ description: '文章的封面' })
-  cover: {
-    type: number;
-    images: string[];
-  };
+  cover: string[];
 }
