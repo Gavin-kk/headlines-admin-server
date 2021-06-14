@@ -21,33 +21,41 @@ export class ArticleService {
     });
   }
 
-  /*{
-  status,
-  channelId,
-  startTime,
-  endTime,
-  pageNum,
-  pageSize,
-}*/
   async findAll({
-    status = ArticleStatus.draft,
-    channelId = 0,
-    startTime = 0,
-    endTime = 9999999999999999,
+    status,
+    channelId,
+    startTime,
+    endTime,
     pageNum = 1,
     pageSize = 10,
   }: GetAllArticleDto) {
-    return this.articleRepository
-      .createQueryBuilder('a')
-      .select()
-      .where('a.status = :status', { status })
-      .andWhere('a.channel_id = :channelId', { channelId })
-      .andWhere('a.create_time > :startTime', { startTime })
-      .andWhere('a.create_time < :endTime', { endTime })
+    const article = this.articleRepository.createQueryBuilder('a').select();
+
+    if (status && status !== 'all') {
+      article.where('a.status = :status', { status });
+    }
+    if (channelId) {
+      article.andWhere('a.channel_id = :channelId', { channelId });
+    }
+    if (startTime) {
+      article.andWhere('a.create_time > :startTime', { startTime });
+    }
+    if (endTime) {
+      article.andWhere('a.create_time < :endTime', { endTime });
+    }
+    const total = await article.getMany();
+
+    const list: Article[] = await article
       .offset((pageNum - 1) * pageSize)
       .limit(pageSize)
       .getMany();
-    // console.log(exist);
+
+    return {
+      total: total.length,
+      pageNum,
+      pageSize,
+      list,
+    };
   }
 
   findOne(id: number) {

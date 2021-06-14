@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetAllArticleDto {
   @ApiProperty({ description: '文章状态', required: false })
-  status?: ArticleStatus;
+  status?: ArticleStatus | 'all';
   @ApiProperty({ description: '频道id', required: false })
   channelId?: number;
   @ApiProperty({ description: '开始时间', required: false })

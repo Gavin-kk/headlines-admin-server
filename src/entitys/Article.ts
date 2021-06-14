@@ -1,31 +1,47 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('article', { schema: 'headline_admin' })
+@Entity("article", { schema: "headline_admin" })
 export class Article {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
 
-  @Column('varchar', { name: 'title', length: 500 })
+  @Column("varchar", { name: "title", length: 500 })
   title: string;
 
-  @Column('int', { name: 'status' })
-  status: number;
-
-  @Column('timestamp', {
-    name: 'createTime',
-    nullable: true,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createTime: Date | null;
-
-  @Column('timestamp', {
-    name: 'updateTime',
-    nullable: true,
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updateTime: Date | null;
-
-  @Column('simple-json', { name: 'cover', nullable: true })
+  @Column("text", { name: "cover", nullable: true })
   cover: string | null;
+
+  @Column("enum", {
+    name: "status",
+    enum: ["0", "1", "2", "3", "4"],
+    default: () => "'0'",
+  })
+  status: "0" | "1" | "2" | "3" | "4";
+
+  @Column("text", { name: "content" })
+  content: string;
+
+  @Column("timestamp", {
+    name: "createAt",
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  createAt: Date | null;
+
+  @Column("timestamp", {
+    name: "updateAt",
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  updateAt: Date | null;
+
+  @Column("bigint", {
+    name: "create_time",
+    nullable: true,
+    default: () => "'1623647458730'",
+  })
+  createTime: string | null;
+
+  @Column("int", { name: "channel_id", nullable: true })
+  channelId: number | null;
 }

@@ -5,6 +5,7 @@ import { databaseConfig } from './config/database.config';
 import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 import { ArticleModule } from './module/article/article.module';
+import { ChannelsModule } from './module/channels/channels.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ArticleModule } from './module/article/article.module';
     AuthModule,
     UserModule,
     ArticleModule,
+    ChannelsModule,
   ],
   controllers: [],
   providers: [],
