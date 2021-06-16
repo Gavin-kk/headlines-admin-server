@@ -38,7 +38,7 @@ export class Article {
   @Column("bigint", {
     name: "create_time",
     nullable: true,
-    default: () => "'1623647458730'",
+    default: () => "'1623833441190'",
   })
   createTime: string | null;
 

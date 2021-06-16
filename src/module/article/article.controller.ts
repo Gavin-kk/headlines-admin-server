@@ -8,7 +8,6 @@ import {
   Delete,
   Query,
   UseInterceptors,
-  UploadedFile,
   UploadedFiles,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
@@ -16,8 +15,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetAllArticleDto } from './dto/get-all-article.dto';
-import { AvatarUploadDto } from '../user/dto/avatar-upload.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadCoverDto } from './dto/upload-cover.dto';
 
 @ApiTags('文章模块')
@@ -27,7 +25,7 @@ export class ArticleController {
 
   @ApiOperation({ summary: '发布文章' })
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
+  public async create(@Body() createArticleDto: CreateArticleDto) {
     return this.articleService.create(createArticleDto);
   }
 

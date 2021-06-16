@@ -25,7 +25,7 @@ export class Article {
     name: 'status',
     default: ArticleStatus.draft,
   })
-  status: number;
+  status: string;
 
   @Column({
     type: 'int',

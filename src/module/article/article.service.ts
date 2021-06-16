@@ -3,7 +3,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from '../entitys/Article';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { GetAllArticleDto } from './dto/get-all-article.dto';
 
 @Injectable()
@@ -13,11 +13,22 @@ export class ArticleService {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  async create({ title, content, cover = [] }: CreateArticleDto) {
+  async create({
+    title,
+    content = '空',
+    cover = '',
+    channel,
+    status = ArticleStatus.draft,
+  }: CreateArticleDto) {
+    if (!content) {
+      content = '<p>啊哦 是空的</p>';
+    }
     return this.articleRepository.save({
       title,
       content,
-      cover: cover,
+      cover: [cover],
+      channelId: channel,
+      status: status,
     });
   }
 
@@ -39,7 +50,9 @@ export class ArticleService {
     pageNum = 1,
     pageSize = 10,
   }: GetAllArticleDto) {
-    const article = this.articleRepository.createQueryBuilder('a').select();
+    const article: SelectQueryBuilder<Article> = this.articleRepository
+      .createQueryBuilder('a')
+      .select();
 
     if (status && status !== 'all') {
       article.where('a.status = :status', { status });
@@ -53,18 +66,16 @@ export class ArticleService {
     if (endTime) {
       article.andWhere('a.create_time < :endTime', { endTime });
     }
-    const total = await article.getMany();
-
-    const list: Article[] = await article
-      .offset((pageNum - 1) * pageSize)
-      .limit(pageSize)
-      .getMany();
+    const result: Article[] = await article.getMany();
+    const list: Article[] = result
+      .reverse()
+      .slice((pageNum - 1) * pageSize, (pageNum - 1) * pageSize + pageSize);
 
     return {
-      total: total.length,
+      total: result.length,
       pageNum,
       pageSize,
-      list,
+      list: list,
     };
   }
 

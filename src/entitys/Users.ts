@@ -1,4 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Material } from "./Material";
+import { MaterialLike } from "./MaterialLike";
 
 @Index("IDX_fe0bb3f6520ee0469504521e71", ["username"], { unique: true })
 @Index("username", ["username"], { unique: true })
@@ -33,9 +41,15 @@ export class Users {
   @Column("varchar", { name: "phone", nullable: true, length: 50 })
   phone: string | null;
 
-  @Column("varchar", { name: "avatar", nullable: true, length: 500 })
-  avatar: string | null;
-
   @Column("text", { name: "intro", nullable: true })
   intro: string | null;
+
+  @Column("text", { name: "avatar", nullable: true })
+  avatar: string | null;
+
+  @OneToMany(() => Material, (material) => material.user)
+  materials: Material[];
+
+  @OneToMany(() => MaterialLike, (materialLike) => materialLike.user)
+  materialLikes: MaterialLike[];
 }

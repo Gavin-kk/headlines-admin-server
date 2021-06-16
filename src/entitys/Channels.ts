@@ -7,4 +7,18 @@ export class Channels {
 
   @Column("varchar", { name: "name", length: 100 })
   name: string;
+
+  @Column("timestamp", {
+    name: "createAt",
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  createAt: Date | null;
+
+  @Column("timestamp", {
+    name: "updateAt",
+    nullable: true,
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  updateAt: Date | null;
 }
