@@ -56,12 +56,13 @@ export class MaterialController {
   @ApiOperation({ summary: '获取个人所有喜欢的素材' })
   @Get('like/all')
   async getAllLikes(@CurrentUser('id') id: number) {
-    console.log(id);
-
     return this.materialService.getAllLike(id);
   }
 
-  @ApiOperation({ summary: '添加个人喜欢' })
+  @ApiOperation({
+    summary: '添加个人喜欢和取消喜欢',
+    description: '已经喜欢过的素材 再次请求此接口携带喜欢的id 就可以取消喜欢了',
+  })
   @Post('like')
   async likeMaterial(
     @Body() likeMaterialDto: LikeMaterialDto,
@@ -70,6 +71,7 @@ export class MaterialController {
     return this.materialService.likeMaterial(likeMaterialDto, userid);
   }
 
+  @ApiOperation({ summary: '删除素材' })
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.materialService.remove(+id);

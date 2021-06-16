@@ -52,15 +52,41 @@ export class MaterialService {
         like: likeMaterialDto.id,
       },
     );
-    if (doesItExist) {
-      throw new HttpException({ code: 400, message: '已经添加过了' }, 400);
+    try {
+      // 如果已经喜欢过了 再次喜欢就是取消喜欢
+      if (doesItExist) {
+        // 把素材表中的是否喜欢设置为false
+        await this.materialRepository
+          .createQueryBuilder()
+          .update()
+          .set({ like: false })
+          .where('id = :id', { id: likeMaterialDto.id })
+          .execute();
+        // 删除喜欢表中的数据
+        await this.materialLikeRepository
+          .createQueryBuilder()
+          .delete()
+          .where('like = :id', { id: likeMaterialDto.id })
+          .execute();
+        return '取消喜欢成功';
+      }
+      // 如果没有喜欢过 执行下面代码
+      await this.materialRepository
+        .createQueryBuilder()
+        .update()
+        .set({ like: true })
+        .where('id = :id', { id: likeMaterialDto.id })
+        .execute();
+      await this.materialLikeRepository
+        .createQueryBuilder()
+        .insert()
+        .into(MaterialLike)
+        .values([{ userId, like: likeMaterialDto.id }])
+        .execute();
+      return '添加喜欢成功';
+    } catch (err) {
+      throw new HttpException({ code: 400, message: '未知错误' }, 400);
     }
-    return this.materialLikeRepository
-      .createQueryBuilder()
-      .insert()
-      .into(MaterialLike)
-      .values([{ userId, like: likeMaterialDto.id }])
-      .execute();
   }
 
   async getAllLike(id: number): Promise<Material[]> {
