@@ -7,6 +7,7 @@ import { Material } from '../entitys/Material';
 import { Repository } from 'typeorm';
 import { MaterialLike } from '../entitys/MaterialLike';
 import { LikeMaterialDto } from './dto/like-material.dto';
+import { FindAllDto } from './dto/find-all.dto';
 
 @Injectable()
 export class MaterialService {
@@ -28,7 +29,6 @@ export class MaterialService {
         .into(Material)
         .values([{ matter: material, userId: user.id }])
         .execute();
-
       return {
         imgs: material,
       };
@@ -37,12 +37,25 @@ export class MaterialService {
     }
   }
 
-  async findAll(id: number) {
-    return this.materialRepository
+  async findAll(id: number, findAllDto: FindAllDto) {
+    const { pageSize, pageNum } = findAllDto;
+    const newPageSize = parseInt(pageSize, 10);
+    const newPageNum = parseInt(pageNum, 10) - 1;
+    const result: Material[] = await this.materialRepository
       .createQueryBuilder('m')
       .select()
       .where('m.user_id = :id', { id })
       .getMany();
+    const start = newPageNum * newPageSize;
+    const end = newPageNum * newPageSize + newPageSize;
+    return {
+      page: {
+        pageNum: +pageNum,
+        pageSize: +pageSize,
+        total: result.length,
+      },
+      list: result.reverse().slice(start, end),
+    };
   }
 
   async likeMaterial(likeMaterialDto: LikeMaterialDto, userId: number) {
@@ -89,16 +102,42 @@ export class MaterialService {
     }
   }
 
-  async getAllLike(id: number): Promise<Material[]> {
+  async getAllLike(id: number, findAllDto: FindAllDto) {
+    const { pageSize, pageNum } = findAllDto;
+    const newPageSize = parseInt(pageSize, 10);
+    const newPageNum = parseInt(pageNum, 10) - 1;
+    const start = newPageNum * newPageSize;
+    const end = newPageNum * newPageSize + newPageSize;
     const sql = `select material.* from users join material_like on users.id = material_like.user_id join material on  material.id = material_like.like where material.user_id = ${id}`;
-    return await this.userRepository.query(sql);
+    const result: Material[] = await this.userRepository.query(sql);
+    return {
+      page: {
+        pageNum: +pageNum,
+        pageSize: +pageSize,
+        total: result.length,
+      },
+      list: result.reverse().slice(start, end),
+    };
   }
 
   async remove(id: number) {
-    return this.materialRepository
-      .createQueryBuilder()
-      .delete()
-      .where('id = :id', { id })
-      .execute();
+    const doesItExist = await this.materialLikeRepository.findOne({ like: id });
+    try {
+      if (doesItExist) {
+        await this.materialLikeRepository
+          .createQueryBuilder()
+          .delete()
+          .where('like = :id', { id })
+          .execute();
+      }
+      await this.materialRepository
+        .createQueryBuilder()
+        .delete()
+        .where('id = :id', { id })
+        .execute();
+      return '删除成功';
+    } catch (err) {
+      throw new HttpException({ code: 400, message: '删除失败' }, 400);
+    }
   }
 }

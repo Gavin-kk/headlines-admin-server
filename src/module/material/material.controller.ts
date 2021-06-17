@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { LikeMaterialDto } from './dto/like-material.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { FindAllDto } from './dto/find-all.dto';
 
 @ApiBearerAuth()
 @ApiTags('素材管理模块')
@@ -49,14 +50,20 @@ export class MaterialController {
 
   @ApiOperation({ summary: '获取个人所有的素材' })
   @Get()
-  async findAll(@CurrentUser('id') id: string) {
-    return this.materialService.findAll(+id);
+  async findAll(
+    @CurrentUser('id') id: string,
+    @Query() findAllDto: FindAllDto,
+  ) {
+    return this.materialService.findAll(+id, findAllDto);
   }
 
   @ApiOperation({ summary: '获取个人所有喜欢的素材' })
   @Get('like/all')
-  async getAllLikes(@CurrentUser('id') id: number) {
-    return this.materialService.getAllLike(id);
+  async getAllLikes(
+    @CurrentUser('id') id: number,
+    @Query() findAllDto: FindAllDto,
+  ) {
+    return this.materialService.getAllLike(id, findAllDto);
   }
 
   @ApiOperation({

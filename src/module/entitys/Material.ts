@@ -22,8 +22,8 @@ export class Material {
   @Column('int', { name: 'user_id', nullable: true })
   userId: number | null;
 
-  @Column('bit', { name: 'like' })
-  like: boolean;
+  @Column('bit', { name: 'like', nullable: true })
+  like: boolean | null;
 
   @Column('timestamp', {
     name: 'createAt',
