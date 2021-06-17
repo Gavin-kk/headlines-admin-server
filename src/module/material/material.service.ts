@@ -4,10 +4,12 @@ import { UpdateMaterialDto } from './dto/update-material.dto';
 import { Users } from '../entitys/Users';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Material } from '../entitys/Material';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 import { MaterialLike } from '../entitys/MaterialLike';
 import { LikeMaterialDto } from './dto/like-material.dto';
 import { FindAllDto } from './dto/find-all.dto';
+import { join, resolve } from 'path';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class MaterialService {
@@ -20,10 +22,12 @@ export class MaterialService {
     private readonly userRepository: Repository<Users>,
   ) {}
 
+  private uploadPath = resolve(__dirname, '../../upload');
+
   async create(file: Express.Multer.File, user: Users) {
     const material = `http://${process.env.APP_HOST}:${process.env.APP_PORT}/static/${file.filename}`;
     try {
-      await this.materialRepository
+      const { generatedMaps }: InsertResult = await this.materialRepository
         .createQueryBuilder()
         .insert()
         .into(Material)
@@ -31,6 +35,7 @@ export class MaterialService {
         .execute();
       return {
         imgs: material,
+        id: parseInt(generatedMaps[0].id, 10),
       };
     } catch (err) {
       throw new HttpException({ code: 400, message: '未知错误' }, 400);
@@ -122,6 +127,10 @@ export class MaterialService {
 
   async remove(id: number) {
     const doesItExist = await this.materialLikeRepository.findOne({ like: id });
+    const filePath: Material = await this.materialRepository
+      .createQueryBuilder()
+      .where('id = :id', { id })
+      .getOne();
     try {
       if (doesItExist) {
         await this.materialLikeRepository
@@ -135,6 +144,12 @@ export class MaterialService {
         .delete()
         .where('id = :id', { id })
         .execute();
+
+      const rootPath = `http://${process.env.APP_HOST}:${process.env.APP_PORT}/static/`;
+      const deletePath = filePath.matter.replace(rootPath, '');
+      // 删除文件
+      await unlink(resolve(`${this.uploadPath}`, deletePath));
+
       return '删除成功';
     } catch (err) {
       throw new HttpException({ code: 400, message: '删除失败' }, 400);
