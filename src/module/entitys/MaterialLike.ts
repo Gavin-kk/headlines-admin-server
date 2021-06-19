@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Users } from './Users';
 import { Material } from './Material';
+import * as moment from 'moment';
 
 @Index('material_like', ['like'], {})
 @Index('material_users_id', ['userId'], {})
@@ -26,6 +27,14 @@ export class MaterialLike {
     name: 'createAt',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      to(value: string): string {
+        return value;
+      },
+      from(value: string): number {
+        return moment(value).valueOf();
+      },
+    },
   })
   createAt: Date | null;
 
@@ -34,6 +43,14 @@ export class MaterialLike {
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
+    transformer: {
+      to(value: string): string {
+        return value;
+      },
+      from(value: string): number {
+        return moment(value).valueOf();
+      },
+    },
   })
   updateAt: Date | null;
 

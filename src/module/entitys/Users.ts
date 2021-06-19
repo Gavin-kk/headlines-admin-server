@@ -9,6 +9,8 @@ import { hashSync } from 'bcryptjs';
 import * as moment from 'moment';
 import { Material } from './Material';
 import { MaterialLike } from './MaterialLike';
+import { Comment } from './Comment';
+import { Article } from './Article';
 
 @Index('IDX_fe0bb3f6520ee0469504521e71', ['username'], { unique: true })
 @Index('username', ['username'], { unique: true })
@@ -76,6 +78,12 @@ export class Users {
 
   @Column('text', { name: 'intro', nullable: true })
   intro: string | null;
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   @OneToMany(() => Material, (material) => material.user)
   materials: Material[];

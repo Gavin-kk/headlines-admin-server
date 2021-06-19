@@ -15,5 +15,6 @@ import { fileFilter, storage } from 'src/config/upload.config';
   ],
   controllers: [ArticleController],
   providers: [ArticleService],
+  exports: [ArticleService],
 })
 export class ArticleModule {}

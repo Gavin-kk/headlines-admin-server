@@ -16,9 +16,6 @@ export class Material {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
 
-  @Column("int", { name: "user_id", nullable: true })
-  userId: number | null;
-
   @Column("timestamp", {
     name: "createAt",
     nullable: true,
@@ -33,11 +30,14 @@ export class Material {
   })
   updateAt: Date | null;
 
-  @Column("int", { name: "really_like", nullable: true })
-  reallyLike: number | null;
-
   @Column("varchar", { name: "matter", nullable: true, length: 400 })
   matter: string | null;
+
+  @Column("int", { name: "user_id", nullable: true })
+  userId: number | null;
+
+  @Column("bit", { name: "like", nullable: true })
+  like: boolean | null;
 
   @ManyToOne(() => Users, (users) => users.materials, {
     onDelete: "CASCADE",

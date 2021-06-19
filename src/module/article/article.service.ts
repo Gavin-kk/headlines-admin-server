@@ -13,13 +13,16 @@ export class ArticleService {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  async create({
-    title,
-    content = '空',
-    cover = '',
-    channel,
-    status = ArticleStatus.draft,
-  }: CreateArticleDto) {
+  async create(
+    {
+      title,
+      content = '空',
+      cover = '',
+      channel,
+      status = ArticleStatus.draft,
+    }: CreateArticleDto,
+    id: number,
+  ) {
     if (!content) {
       content = '<p>啊哦 是空的</p>';
     }
@@ -29,6 +32,7 @@ export class ArticleService {
       cover: [cover],
       channelId: channel,
       status: status,
+      userId: id,
     });
   }
 
@@ -42,14 +46,17 @@ export class ArticleService {
     return covers;
   }
 
-  async findAll({
-    status,
-    channelId,
-    startTime,
-    endTime,
-    pageNum = 1,
-    pageSize = 10,
-  }: GetAllArticleDto) {
+  async findAll(
+    {
+      status,
+      channelId,
+      startTime,
+      endTime,
+      pageNum = '1',
+      pageSize = '10',
+    }: GetAllArticleDto,
+    id: number,
+  ) {
     const article: SelectQueryBuilder<Article> = this.articleRepository
       .createQueryBuilder('a')
       .select();
@@ -66,15 +73,22 @@ export class ArticleService {
     if (endTime) {
       article.andWhere('a.create_time < :endTime', { endTime });
     }
-    const result: Article[] = await article.getMany();
+    const result: Article[] = await article
+      .where('user_id = :id', { id })
+      .andWhere('status != 0')
+      .getMany();
+
     const list: Article[] = result
       .reverse()
-      .slice((pageNum - 1) * pageSize, (pageNum - 1) * pageSize + pageSize);
+      .slice(
+        (parseInt(pageNum) - 1) * parseInt(pageSize),
+        (parseInt(pageNum) - 1) * parseInt(pageSize) + parseInt(pageSize),
+      );
 
     return {
       total: result.length,
-      pageNum,
-      pageSize,
+      pageNum: parseInt(pageNum),
+      pageSize: parseInt(pageSize),
       list: list,
     };
   }
@@ -91,6 +105,19 @@ export class ArticleService {
     return this.articleRepository
       .createQueryBuilder()
       .delete()
+      .where('id = :id', { id })
+      .execute();
+  }
+
+  async commentSwitch(id: number) {
+    const result = await this.articleRepository.findOne(id);
+    const whetherComment: { type: string; data: [0 | 1] } = JSON.parse(
+      JSON.stringify(result.whetherComment),
+    );
+    return this.articleRepository
+      .createQueryBuilder()
+      .update()
+      .set({ whetherComment: !whetherComment.data[0] })
       .where('id = :id', { id })
       .execute();
   }

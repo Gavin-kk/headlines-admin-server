@@ -7,6 +7,7 @@ import { UserModule } from './module/user/user.module';
 import { ArticleModule } from './module/article/article.module';
 import { ChannelsModule } from './module/channels/channels.module';
 import { MaterialModule } from './module/material/material.module';
+import { CommentModule } from './module/comment/comment.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MaterialModule } from './module/material/material.module';
     ArticleModule,
     ChannelsModule,
     MaterialModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],

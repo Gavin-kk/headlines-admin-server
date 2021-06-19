@@ -5,13 +5,13 @@ export class GetAllArticleDto {
   @ApiProperty({ description: '文章状态', required: false })
   status?: ArticleStatus | 'all';
   @ApiProperty({ description: '频道id', required: false })
-  channelId?: number;
+  channelId?: string;
   @ApiProperty({ description: '开始时间', required: false })
-  startTime?: number;
+  startTime?: string;
   @ApiProperty({ description: '结束时间', required: false })
-  endTime?: number;
+  endTime?: string;
   @ApiProperty({ description: '页码', required: false })
-  pageNum?: number;
+  pageNum?: string;
   @ApiProperty({ description: '每页数量', required: false })
-  pageSize?: number;
+  pageSize?: string;
 }

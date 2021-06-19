@@ -5,11 +5,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Article } from "./Article";
+import { Comment } from "./Comment";
 import { Material } from "./Material";
 import { MaterialLike } from "./MaterialLike";
 
-@Index("IDX_fe0bb3f6520ee0469504521e71", ["username"], { unique: true })
 @Index("username", ["username"], { unique: true })
+@Index("IDX_fe0bb3f6520ee0469504521e71", ["username"], { unique: true })
 @Entity("users", { schema: "headline_admin" })
 export class Users {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
@@ -46,6 +48,12 @@ export class Users {
 
   @Column("text", { name: "avatar", nullable: true })
   avatar: string | null;
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   @OneToMany(() => Material, (material) => material.user)
   materials: Material[];

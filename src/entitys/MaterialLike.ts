@@ -6,11 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Users } from "./Users";
 import { Material } from "./Material";
+import { Users } from "./Users";
 
-@Index("material_like", ["like"], {})
 @Index("material_users_id", ["userId"], {})
+@Index("material_like", ["like"], {})
 @Entity("material_like", { schema: "headline_admin" })
 export class MaterialLike {
   @Column("int", { name: "user_id", comment: "用户" })
@@ -36,17 +36,17 @@ export class MaterialLike {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
 
-  @ManyToOne(() => Users, (users) => users.materialLikes, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Users;
-
   @ManyToOne(() => Material, (material) => material.materialLikes, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "like", referencedColumnName: "id" }])
   like2: Material;
+
+  @ManyToOne(() => Users, (users) => users.materialLikes, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
+  user: Users;
 }
