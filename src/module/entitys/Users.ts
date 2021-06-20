@@ -12,6 +12,11 @@ import { MaterialLike } from './MaterialLike';
 import { Comment } from './Comment';
 import { Article } from './Article';
 
+export enum Gender {
+  male = '男',
+  female = '女',
+}
+
 @Index('IDX_fe0bb3f6520ee0469504521e71', ['username'], { unique: true })
 @Index('username', ['username'], { unique: true })
 @Entity('users', { schema: 'nest_admin' })
@@ -41,6 +46,18 @@ export class Users {
 
   @Column('varchar', { name: 'email', nullable: true, length: 50 })
   email: string | null;
+
+  @Column('varchar', { name: 'nickname', nullable: true, length: 50 })
+  nickname: string | null;
+
+  @Column({ type: 'enum', enum: Gender, name: 'gender', default: Gender.male })
+  gender: string | null;
+
+  @Column({ type: 'bigint', name: 'date_birth', nullable: true })
+  dateOfBirth: number | null;
+
+  @Column({ type: 'simple-json', name: 'city', nullable: true })
+  city: { id: number; city: string }[];
 
   @Column('timestamp', {
     name: 'createAt',

@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Users } from "./Users";
 import { MaterialLike } from "./MaterialLike";
+import { Users } from "./Users";
 
 @Index("material_user_id", ["userId"], {})
 @Entity("material", { schema: "headline_admin" })
@@ -39,13 +39,13 @@ export class Material {
   @Column("bit", { name: "like", nullable: true })
   like: boolean | null;
 
+  @OneToMany(() => MaterialLike, (materialLike) => materialLike.like2)
+  materialLikes: MaterialLike[];
+
   @ManyToOne(() => Users, (users) => users.materials, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Users;
-
-  @OneToMany(() => MaterialLike, (materialLike) => materialLike.like2)
-  materialLikes: MaterialLike[];
 }

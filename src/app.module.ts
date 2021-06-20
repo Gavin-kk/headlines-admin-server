@@ -8,6 +8,7 @@ import { ArticleModule } from './module/article/article.module';
 import { ChannelsModule } from './module/channels/channels.module';
 import { MaterialModule } from './module/material/material.module';
 import { CommentModule } from './module/comment/comment.module';
+import { GeographicModule } from './module/geographic/geographic.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CommentModule } from './module/comment/comment.module';
     ChannelsModule,
     MaterialModule,
     CommentModule,
+    GeographicModule,
   ],
   controllers: [],
   providers: [],

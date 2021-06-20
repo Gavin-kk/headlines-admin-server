@@ -63,6 +63,7 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: Users,
   ) {
+    console.log(file);
     return this.userService.avatarUpload(file, user);
   }
 

@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Material } from "./Material";
 import { Users } from "./Users";
+import { Material } from "./Material";
 
 @Index("material_users_id", ["userId"], {})
 @Index("material_like", ["like"], {})
@@ -36,17 +36,17 @@ export class MaterialLike {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
 
-  @ManyToOne(() => Material, (material) => material.materialLikes, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn([{ name: "like", referencedColumnName: "id" }])
-  like2: Material;
-
   @ManyToOne(() => Users, (users) => users.materialLikes, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Users;
+
+  @ManyToOne(() => Material, (material) => material.materialLikes, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
+  @JoinColumn([{ name: "like", referencedColumnName: "id" }])
+  like2: Material;
 }

@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Users } from "./Users";
 import { Comment } from "./Comment";
+import { Users } from "./Users";
 
 @Index("user_id", ["userId"], {})
 @Entity("article", { schema: "headline_admin" })
@@ -49,19 +49,15 @@ export class Article {
   @Column("bigint", {
     name: "create_time",
     nullable: true,
-    default: () => "'1624086919909'",
+    default: () => "'1624095566715'",
   })
   createTime: string | null;
 
   @Column("int", { name: "channel_id", nullable: true })
   channelId: number | null;
 
-  @Column("bit", {
-    name: "whether_comment",
-    nullable: true,
-    default: () => "'b'1''",
-  })
-  whetherComment: boolean | null;
+  @Column("bit", { name: "whether_comment", default: () => "'b'1''" })
+  whetherComment: boolean;
 
   @Column("int", {
     name: "total_comments",
@@ -70,8 +66,11 @@ export class Article {
   })
   totalComments: number;
 
-  @Column("int", { name: "user_id", nullable: true })
-  userId: number | null;
+  @Column("int", { name: "user_id" })
+  userId: number;
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 
   @ManyToOne(() => Users, (users) => users.articles, {
     onDelete: "CASCADE",
@@ -79,7 +78,4 @@ export class Article {
   })
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
   user: Users;
-
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments: Comment[];
 }

@@ -19,4 +19,7 @@ export class RegisterDto extends Users {
 
   @ApiProperty({ description: '头条号简介' })
   intro: string;
+
+  @ApiProperty({ description: '昵称', required: false })
+  nickname: string;
 }

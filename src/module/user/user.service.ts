@@ -19,6 +19,7 @@ export class UserService {
   }
 
   async avatarUpload(file: Express.Multer.File, user: Users) {
+    console.log(file);
     const { filename } = file;
     const { id } = user;
     const path = [

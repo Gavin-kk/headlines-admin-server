@@ -29,6 +29,7 @@ export const storage = diskStorage({
     file: Express.Multer.File,
     callback: (error: Error | null, filename: string) => void,
   ) {
+    console.log(file);
     const fileName = `${v4()}.${new Date().getTime()}.${file.encoding}${extname(
       file.originalname,
     )}`;

@@ -5,10 +5,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Article } from "./Article";
-import { Comment } from "./Comment";
-import { Material } from "./Material";
 import { MaterialLike } from "./MaterialLike";
+import { Material } from "./Material";
+import { Comment } from "./Comment";
+import { Article } from "./Article";
 
 @Index("username", ["username"], { unique: true })
 @Index("IDX_fe0bb3f6520ee0469504521e71", ["username"], { unique: true })
@@ -49,15 +49,15 @@ export class Users {
   @Column("text", { name: "avatar", nullable: true })
   avatar: string | null;
 
-  @OneToMany(() => Article, (article) => article.user)
-  articles: Article[];
-
-  @OneToMany(() => Comment, (comment) => comment.user)
-  comments: Comment[];
+  @OneToMany(() => MaterialLike, (materialLike) => materialLike.user)
+  materialLikes: MaterialLike[];
 
   @OneToMany(() => Material, (material) => material.user)
   materials: Material[];
 
-  @OneToMany(() => MaterialLike, (materialLike) => materialLike.user)
-  materialLikes: MaterialLike[];
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
 }

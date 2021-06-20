@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Article } from "./Article";
 import { Users } from "./Users";
+import { Article } from "./Article";
 
 @Index("user_id", ["userId"], {})
 @Index("parent_id", ["parentId"], {})
@@ -47,12 +47,12 @@ export class Comment {
   })
   updateAt: Date | null;
 
-  @ManyToOne(() => Article, (article) => article.comments, {
+  @ManyToOne(() => Users, (users) => users.comments, {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
-  @JoinColumn([{ name: "article_id", referencedColumnName: "id" }])
-  article: Article;
+  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
+  user: Users;
 
   @ManyToOne(() => Comment, (comment) => comment.comments, {
     onDelete: "NO ACTION",
@@ -64,10 +64,10 @@ export class Comment {
   @OneToMany(() => Comment, (comment) => comment.parent)
   comments: Comment[];
 
-  @ManyToOne(() => Users, (users) => users.comments, {
+  @ManyToOne(() => Article, (article) => article.comments, {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
-  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user: Users;
+  @JoinColumn([{ name: "article_id", referencedColumnName: "id" }])
+  article: Article;
 }
